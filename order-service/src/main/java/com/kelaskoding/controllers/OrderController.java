@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kelaskoding.dto.OrderResponse;
 import com.kelaskoding.entity.Order;
 import com.kelaskoding.service.OrderService;
 
@@ -16,7 +17,7 @@ public class OrderController {
     private OrderService orderService;
     
     @GetMapping("/{id}")
-    public Order findById(@PathVariable("id") Long id){
+    public OrderResponse findById(@PathVariable("id") Long id){
         return orderService.findById(id);
     }
 }
