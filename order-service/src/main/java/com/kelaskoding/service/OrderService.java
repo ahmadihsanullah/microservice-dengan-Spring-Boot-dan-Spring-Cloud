@@ -27,11 +27,31 @@ public class OrderService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private Order save(Order order) {
+    public Order save(Order order) {
         for (OrderLine orderLine : order.getOrderLines()) {
             orderLine.setOrder(order);
         }
         return orderRepo.save(order);
+    }
+
+    public OrderResponse findByOrderNumber(String orderNumber) {
+        Order order = orderRepo.findByOrderNumber(orderNumber);
+        if (order == null) {
+            return null;
+        }
+
+        OrderResponse response = new OrderResponse(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getOrderDate(),
+                findCustomerById(order.getCustomerId()),
+                new ArrayList<OrderLineResponse>());
+
+        for (OrderLine orderline : order.getOrderLines()) {
+            Product product = findProductById(orderline.getProductId());
+            response.getOrderlines().add(new OrderLineResponse(orderline.getId(),product, orderline.getQuantity(), orderline.getPrice()));
+        }
+        return response;
     }
 
     public OrderResponse findById(Long id) {
