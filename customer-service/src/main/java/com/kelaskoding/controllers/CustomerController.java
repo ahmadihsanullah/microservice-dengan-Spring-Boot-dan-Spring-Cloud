@@ -42,6 +42,7 @@ public class CustomerController {
             return ResponseEntity.badRequest().body(response);
         }
         try {
+            customerService.save(customer);
             response.setStatus(true);
             response.setMessage(List.of("Customer saved successfully"));
             response.setPayload(customerService.save(customer));
