@@ -14,6 +14,8 @@ import com.kelaskoding.dto.Product;
 import com.kelaskoding.entity.Order;
 import com.kelaskoding.entity.OrderLine;
 import com.kelaskoding.repository.OrderRepo;
+import com.kelaskoding.webclient.CustomerClient;
+import com.kelaskoding.webclient.ProductClient;
 
 import jakarta.transaction.Transactional;
 
@@ -24,8 +26,14 @@ public class OrderService {
     @Autowired
     private OrderRepo orderRepo;
 
+    // @Autowired
+    // private RestTemplate restTemplate;
+
     @Autowired
-    private RestTemplate restTemplate;
+    private CustomerClient customerClient;
+
+    @Autowired
+    private ProductClient productClient;
 
     public Order save(Order order) {
         for (OrderLine orderLine : order.getOrderLines()) {
@@ -44,11 +52,11 @@ public class OrderService {
                 order.getId(),
                 order.getOrderNumber(),
                 order.getOrderDate(),
-                findCustomerById(order.getCustomerId()),
+                customerClient.findById(order.getCustomerId()),
                 new ArrayList<OrderLineResponse>());
 
         for (OrderLine orderline : order.getOrderLines()) {
-            Product product = findProductById(orderline.getProductId());
+            Product product = productClient.findById(orderline.getProductId());
             response.getOrderlines().add(new OrderLineResponse(orderline.getId(),product, orderline.getQuantity(), orderline.getPrice()));
         }
         return response;
@@ -65,21 +73,21 @@ public class OrderService {
                 order.getId(),
                 order.getOrderNumber(),
                 order.getOrderDate(),
-                findCustomerById(order.getCustomerId()),
+                customerClient.findById(order.getCustomerId()),
                 new ArrayList<OrderLineResponse>());
 
         for (OrderLine orderline : order.getOrderLines()) {
-            Product product = findProductById(orderline.getProductId());
+            Product product = productClient.findById(orderline.getProductId());
             response.getOrderlines().add(new OrderLineResponse(orderline.getId(),product, orderline.getQuantity(), orderline.getPrice()));
         }
         return response;
     }
 
-    public Customer findCustomerById(Long id) {
-        return restTemplate.getForObject("http://CUSTOMER-SERVICE/api/customers/" + id, Customer.class);
-    }
+    // public Customer findCustomerById(Long id) {
+    //     return restTemplate.getForObject("http://CUSTOMER-SERVICE/api/customers/" + id, Customer.class);
+    // }
 
-    public Product findProductById(Long id) {
-        return restTemplate.getForObject("http://PRODUCT-SERVICE/api/products/" + id, Product.class);
-    }
+    // public Product findProductById(Long id) {
+    //     return restTemplate.getForObject("http://PRODUCT-SERVICE/api/products/" + id, Product.class);
+    // }
 }
