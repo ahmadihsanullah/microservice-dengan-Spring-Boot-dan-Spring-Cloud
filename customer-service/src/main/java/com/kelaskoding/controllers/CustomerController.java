@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +21,24 @@ import com.kelaskoding.dto.SearchEmailRequest;
 import com.kelaskoding.entity.Customer;
 import com.kelaskoding.services.CustomerService;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 
 @RestController
 @RequestMapping("/api/customers")
+@RefreshScope
 public class CustomerController {
     
     @Autowired
     private CustomerService customerService;
+
+    @Value("${spring.application.version}")
+    private String customerVersion;
+
+    @GetMapping("/version")
+    public String getVersion(){
+        return customerVersion;
+    }
 
     @PostMapping
     public ResponseEntity<ResponseData<Customer>> save(@Valid @RequestBody Customer customer, Errors errors){

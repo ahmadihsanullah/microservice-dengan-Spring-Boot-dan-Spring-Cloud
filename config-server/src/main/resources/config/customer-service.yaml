@@ -7,7 +7,7 @@ eureka:
             defaultZone: http://localhost:8761/eureka/
 spring:
     application:
-        version: Customer Service v1.0.0
+        version: Customer Service v2.0
     datasource:
         url: jdbc:mysql://localhost:3306/db_customer
         username: root
@@ -25,3 +25,9 @@ spring:
         hibernate:
             ddl-auto: update
         show-sql: true
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
