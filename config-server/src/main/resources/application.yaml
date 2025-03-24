@@ -1,0 +1,7 @@
+server:
+    port: 8088
+
+# mengaktifkan config server di yaml
+spring:
+    profiles:
+        active: native
