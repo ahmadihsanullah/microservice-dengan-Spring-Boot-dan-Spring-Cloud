@@ -5,9 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import com.kelaskoding.dto.Customer;
 import com.kelaskoding.dto.OrderLineResponse;
 import com.kelaskoding.dto.OrderResponse;
 import com.kelaskoding.dto.Product;
@@ -17,6 +15,7 @@ import com.kelaskoding.repository.OrderRepo;
 import com.kelaskoding.webclient.CustomerClient;
 import com.kelaskoding.webclient.ProductClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -31,6 +30,7 @@ public class OrderService {
 
     @Autowired
     private CustomerClient customerClient;
+
 
     @Autowired
     private ProductClient productClient;
@@ -60,7 +60,7 @@ public class OrderService {
             response.getOrderlines().add(new OrderLineResponse(orderline.getId(),product, orderline.getQuantity(), orderline.getPrice()));
         }
         return response;
-    }
+    }   
 
     public OrderResponse findById(Long id) {
         Optional<Order> optOrder = orderRepo.findById(id);
@@ -68,7 +68,9 @@ public class OrderService {
             return null;
         }
 
+
         Order order = optOrder.get();
+            // Simulate a delay
         OrderResponse response = new OrderResponse(
                 order.getId(),
                 order.getOrderNumber(),
@@ -81,6 +83,10 @@ public class OrderService {
             response.getOrderlines().add(new OrderLineResponse(orderline.getId(),product, orderline.getQuantity(), orderline.getPrice()));
         }
         return response;
+    }
+
+    public OrderResponse fallbackFindCustomerById(Long id, Throwable throwable) {
+        return new OrderResponse();
     }
 
     // public Customer findCustomerById(Long id) {

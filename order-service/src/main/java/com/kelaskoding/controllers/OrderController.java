@@ -12,6 +12,8 @@ import com.kelaskoding.dto.OrderResponse;
 import com.kelaskoding.entity.Order;
 import com.kelaskoding.service.OrderService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -24,8 +26,13 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "customerService", fallbackMethod = "fallbackFindCustomerById")
     public OrderResponse findById(@PathVariable("id") Long id){
         return orderService.findById(id);
+    }
+
+    public OrderResponse fallbackFindCustomerById(Long id, Throwable throwable) {
+        return new OrderResponse();
     }
 
     @PostMapping
