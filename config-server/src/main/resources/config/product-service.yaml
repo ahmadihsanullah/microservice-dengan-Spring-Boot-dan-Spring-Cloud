@@ -27,3 +27,7 @@ spring:
         show-sql: true
         properties:
             format-sql: true
+management:
+    tracing:
+        sampling:
+            probability: 1.0
