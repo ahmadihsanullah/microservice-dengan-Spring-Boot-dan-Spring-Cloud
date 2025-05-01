@@ -10,17 +10,30 @@ spring:
         name: api-gateway
     cloud:
         gateway:
-            mvc:
-                routes:
-                    - id: customer-service
-                      uri: lb://customer-service
-                      predicates:
-                        - Path=/api/customers/**
-                    - id: product-service
-                      uri: lb://product-service
-                      predicates:
-                        - Path=/api/products/**
-                    - id: order-service
-                      uri: lb://order-service
-                      predicates:
-                        - Path=/api/orders/**
+            routes:
+                - id: customer-service
+                  uri: lb://customer-service
+                  predicates:
+                  - Path=/api/customers/**
+                  filters:
+                  - AuthFilter
+                - id: product-service
+                  uri: lb://product-service
+                  predicates:
+                  - Path=/api/products/**
+                  filters:
+                  - AuthFilter
+                - id: order-service
+                  uri: lb://order-service
+                  predicates:
+                  - Path=/api/orders/**
+                  filters:
+                  - AuthFilter
+                - id: auth-service
+                  uri: lb://auth-service
+                  predicates: 
+                  - Path=/api/auth/**
+management:
+    tracing:
+        sampling:
+            probability: 1.0
