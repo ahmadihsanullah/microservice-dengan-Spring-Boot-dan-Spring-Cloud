@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.kelaskoding.dto.AuthRequest;
 import com.kelaskoding.entity.UserInfo;
@@ -45,5 +42,10 @@ public class UserController {
         }else{
             throw new RuntimeException("Invalid username or password");
         }
+    }
+
+    @GetMapping("/validateToken")
+    public String validateToken(@RequestParam String token) {
+        return jwtService.validateToken(token);
     }
 }
